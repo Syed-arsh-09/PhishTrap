@@ -2,17 +2,21 @@
 src/features/lexical.py
 Deterministic lexical feature extraction for URL security classification.
 Provides:
+  - normalize_url(raw_url) -> Tuple[norm_url, host, reg_domain, path_query]
   - extract_lexical_features(norm_url, host, path_query) -> Dict[str, float]
-  - batch_extract_features(df) -> pd.DataFrame
+  - batch_extract_features(data) -> pd.DataFrame
   - FEATURE_NAMES -> List[str]
 """
 
 import re
+import html
 import math
-from collections import Counter
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple, Optional, Union
 import pandas as pd
 import numpy as np
+import tldextract
+
+_extract_tld = tldextract.TLDExtract(suffix_list_urls=None, include_psl_private_domains=True)
 
 SUSPICIOUS_KEYWORDS = [
     'verify', 'login', 'signin', 'update', 'secure', 'account',
@@ -54,23 +58,80 @@ FEATURE_NAMES = [
 ]
 
 
+def normalize_url(raw_url: str) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
+    """
+    Normalizes a URL by:
+      - HTML unescaping (&amp; -> &)
+      - Stripping scheme (http://, https://, etc.)
+      - Stripping userinfo (user:pass@)
+      - Stripping port (:8080)
+      - Stripping leading www. or www[0-9].
+      - Stripping fragment (#...)
+      - Stripping trailing slash
+    Returns:
+      (normalized_url, host, registered_domain, path_query)
+    """
+    if not isinstance(raw_url, str) or not raw_url.strip():
+        return None, None, None, None
+
+    u = html.unescape(raw_url.strip())
+    # Strip scheme
+    u = re.sub(r'^[a-zA-Z][a-zA-Z0-9+.-]*://', '', u)
+    # Strip userinfo
+    u = re.sub(r'^[^/@]+@', '', u)
+    
+    # Split host and path/query/fragment
+    m = re.match(r'^([^/?#]+)(.*)$', u)
+    if not m:
+        return None, None, None, None
+
+    host_port, remainder = m.group(1), m.group(2)
+    
+    # Strip port
+    host = re.sub(r':[0-9]+$', '', host_port).lower()
+    # Strip leading www
+    host = re.sub(r'^www\d*\.', '', host)
+    if not host or ('.' not in host and not IPV4_REGEX.match(host)):
+        if host != 'localhost':
+            return None, None, None, None
+
+    # Clean remainder: strip fragment and trailing slashes
+    remainder = re.sub(r'#.*$', '', remainder)
+    remainder = remainder.rstrip('/')
+    
+    norm = (host + remainder).rstrip('/')
+    if not norm:
+        return None, None, None, None
+
+    tld_res = _extract_tld(host)
+    reg_domain = (
+        getattr(tld_res, 'top_domain_under_public_suffix', None)
+        or tld_res.domain
+        or host
+    )
+    
+    return norm, host, reg_domain, remainder
+
+
 def shannon_entropy(s: str) -> float:
     """Calculates Shannon entropy in bits per character."""
     if not s:
         return 0.0
-    counts = Counter(s)
-    total = len(s)
-    return -sum((c / total) * math.log2(c / total) for c in counts.values())
+    length = len(s)
+    counts = {}
+    for c in s:
+        counts[c] = counts.get(c, 0) + 1
+    entropy = 0.0
+    for count in counts.values():
+        p = count / length
+        entropy -= p * math.log2(p)
+    return entropy
 
 
-def extract_lexical_features(norm_url: str, host: str, path_query: str = "") -> Dict[str, Any]:
+def extract_lexical_features(norm_url: str, host: str, path_query: str) -> Dict[str, float]:
     """
-    Extracts a dictionary of 26 lexical, structural, and information-theoretic features.
+    Deterministic extraction of 26 lexical features for an individual URL.
     """
-    norm_url = norm_url or ""
-    host = host or ""
-    path_query = path_query or ""
-    
     url_len = len(norm_url)
     host_len = len(host)
     pq_len = len(path_query)
@@ -135,46 +196,51 @@ def extract_lexical_features(norm_url: str, host: str, path_query: str = "") -> 
     }
 
 
-def batch_extract_features(df: pd.DataFrame) -> pd.DataFrame:
+def batch_extract_features(data: Union[pd.DataFrame, List[Tuple[str, str, str]]]) -> pd.DataFrame:
     """
-    High-performance vector extraction for pandas DataFrames.
+    High-performance vector extraction. Accepts either a pandas DataFrame
+    with ['norm_url', 'host', 'path_query'] or a list of (norm_url, host, path_query) tuples.
     """
-    urls = df['norm_url'].fillna('').tolist()
-    hosts = df['host'].fillna('').tolist()
-    pqs = df['path_query'].fillna('').tolist()
+    if isinstance(data, pd.DataFrame):
+        urls = data['norm_url'].fillna('').tolist()
+        hosts = data['host'].fillna('').tolist()
+        pqs = data['path_query'].fillna('').tolist()
+    else:
+        urls = [item[0] or '' for item in data]
+        hosts = [item[1] or '' for item in data]
+        pqs = [item[2] or '' for item in data]
     
-    data = {}
-    data['url_len'] = [len(u) for u in urls]
-    data['host_len'] = [len(h) for h in hosts]
-    data['pq_len'] = [len(pq) for pq in pqs]
-    data['num_dots'] = [u.count('.') for u in urls]
-    data['num_hyphens'] = [u.count('-') for u in urls]
-    data['num_underscores'] = [u.count('_') for u in urls]
-    data['num_slashes'] = [u.count('/') for u in urls]
-    data['num_questionmarks'] = [u.count('?') for u in urls]
-    data['num_equals'] = [u.count('=') for u in urls]
-    data['num_at'] = [u.count('@') for u in urls]
-    data['num_amp'] = [u.count('&') for u in urls]
-    data['num_percent'] = [u.count('%') for u in urls]
+    res = {}
+    res['url_len'] = [len(u) for u in urls]
+    res['host_len'] = [len(h) for h in hosts]
+    res['pq_len'] = [len(pq) for pq in pqs]
+    res['num_dots'] = [u.count('.') for u in urls]
+    res['num_hyphens'] = [u.count('-') for u in urls]
+    res['num_underscores'] = [u.count('_') for u in urls]
+    res['num_slashes'] = [u.count('/') for u in urls]
+    res['num_questionmarks'] = [u.count('?') for u in urls]
+    res['num_equals'] = [u.count('=') for u in urls]
+    res['num_at'] = [u.count('@') for u in urls]
+    res['num_amp'] = [u.count('&') for u in urls]
+    res['num_percent'] = [u.count('%') for u in urls]
     
-    data['num_digits'] = [sum(c.isdigit() for c in u) for u in urls]
-    data['digit_ratio'] = [d / max(l, 1) for d, l in zip(data['num_digits'], data['url_len'])]
-    data['letter_ratio'] = [sum(c.isalpha() for c in u) / max(l, 1) for u, l in zip(urls, data['url_len'])]
+    res['num_digits'] = [sum(c.isdigit() for c in u) for u in urls]
+    res['digit_ratio'] = [d / max(l, 1) for d, l in zip(res['num_digits'], res['url_len'])]
+    res['letter_ratio'] = [sum(c.isalpha() for c in u) / max(l, 1) for u, l in zip(urls, res['url_len'])]
     
-    data['host_num_dots'] = [h.count('.') for h in hosts]
-    data['host_num_hyphens'] = [h.count('-') for h in hosts]
-    data['host_has_ip'] = [1 if bool(IPV4_REGEX.match(h)) else 0 for h in hosts]
-    data['subdomain_depth'] = [max(0, d - 1) if not ip else 0 for d, ip in zip(data['host_num_dots'], data['host_has_ip'])]
+    res['host_num_dots'] = [h.count('.') for h in hosts]
+    res['host_num_hyphens'] = [h.count('-') for h in hosts]
+    res['host_has_ip'] = [1 if bool(IPV4_REGEX.match(h)) else 0 for h in hosts]
+    res['subdomain_depth'] = [max(0, d - 1) if not ip else 0 for d, ip in zip(res['host_num_dots'], res['host_has_ip'])]
     
-    data['entropy_url'] = [shannon_entropy(u) for u in urls]
-    data['entropy_host'] = [shannon_entropy(h) for h in hosts]
+    res['entropy_url'] = [shannon_entropy(u) for u in urls]
+    res['entropy_host'] = [shannon_entropy(h) for h in hosts]
     
-    data['kw_count'] = [len(KW_REGEX.findall(u)) for u in urls]
-    data['has_hex'] = [1 if ('%' in u and bool(HEX_REGEX.search(u))) else 0 for u in urls]
-    data['punycode'] = [1 if 'xn--' in h else 0 for h in hosts]
+    res['kw_count'] = [len(KW_REGEX.findall(u)) for u in urls]
+    res['has_hex'] = [1 if ('%' in u and bool(HEX_REGEX.search(u))) else 0 for u in urls]
+    res['punycode'] = [1 if 'xn--' in h else 0 for h in hosts]
     
-    data['pq_num_digits'] = [sum(c.isdigit() for c in pq) for pq in pqs]
-    data['pq_digit_ratio'] = [d / max(l, 1) for d, l in zip(data['pq_num_digits'], data['pq_len'])]
+    res['pq_num_digits'] = [sum(c.isdigit() for c in pq) for pq in pqs]
+    res['pq_digit_ratio'] = [d / max(l, 1) for d, l in zip(res['pq_num_digits'], res['pq_len'])]
     
-    return pd.DataFrame(data, columns=FEATURE_NAMES)
-
+    return pd.DataFrame(res, columns=FEATURE_NAMES)
