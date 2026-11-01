@@ -127,3 +127,4 @@ pytest
 
 ## 🤖 CodeRabbit & CI Integration
 Code quality, security checks, and data leakage protection are continuously monitored via `.coderabbit.yaml`. Local changes can be validated using the automated check loop prior to upstream push.
+

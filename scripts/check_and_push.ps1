@@ -9,7 +9,7 @@
 param(
     [string]$CommitMessage = "",
     [string]$RemoteUrl = "",
-    [string]$Branch = "master"
+    [string]$Branch = "main"
 )
 
 Write-Host "=========================================" -ForegroundColor Cyan
