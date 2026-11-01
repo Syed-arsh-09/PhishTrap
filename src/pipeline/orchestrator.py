@@ -1,13 +1,22 @@
 """
 src/pipeline/orchestrator.py
-Deterministic pipeline orchestrator coordinating the multi-agent workflow.
+Deterministic pipeline orchestrator coordinating the multi-agent workflow
+with durable fail-safe logging and persistence.
 """
 
 import time
+import uuid
+import logging
 import sqlite3
 from typing import List, Dict, Any, Optional, Union
 
-from src.pipeline.contracts import EmailPayload, PipelineResult
+from src.pipeline.contracts import (
+    EmailPayload,
+    PipelineResult,
+    ParserOutput,
+    TriageOutput,
+    ActionOutput
+)
 from src.pipeline.agents import (
     ParserAgent,
     FeatureAgent,
@@ -16,6 +25,10 @@ from src.pipeline.agents import (
     ActionAgent,
     AuditAgent
 )
+from src.storage.db import get_db_context
+from src.storage.repositories import MessageRepository
+
+logger = logging.getLogger(__name__)
 
 
 class PhishingPipelineOrchestrator:
@@ -100,12 +113,44 @@ class PhishingPipelineOrchestrator:
             )
 
         except Exception as e:
-            # Fail-safe handler: Any unhandled exception defaults to HUMAN_REVIEW, never ALLOW
+            # 1. Log full exception trace with context
+            msg_id = getattr(email, "id", None) or f"msg_err_{uuid.uuid4().hex[:8]}"
+            logger.exception("Pipeline failure for message %s: %s", msg_id, e)
+            
             elapsed_ms = round((time.time() - start_time) * 1000, 2)
-            msg_id = getattr(email, 'id', None) or "msg_unknown_err"
+            subject = getattr(email, "subject", "Error Message")
+            sender = getattr(email, "sender", "unknown")
+            body = getattr(email, "body", "")
+            received_at = getattr(email, "received_at", None) or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            decided_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
-            # Create synthetic triage output for fallback
-            from src.pipeline.contracts import TriageOutput, ParserOutput, ActionOutput
+            # 2. Durable Fallback: Attempt to persist minimal HUMAN_REVIEW record on a fresh connection
+            persisted = False
+            try:
+                fallback_msg = {
+                    "id": msg_id,
+                    "subject": subject,
+                    "sender": sender,
+                    "body": body,
+                    "received_at": received_at,
+                    "max_score": 0.0,
+                    "automated_decision": "HUMAN_REVIEW",
+                    "current_status": "HUMAN_REVIEW",
+                    "decided_at": decided_at,
+                    "decided_by": "emergency_fallback"
+                }
+                with get_db_context() as fresh_conn:
+                    MessageRepository.create_message(fresh_conn, fallback_msg, [])
+                persisted = True
+                action_taken = "Emergency fallback: Message durably queued for human review."
+            except Exception as persist_err:
+                logger.exception("Failed to persist emergency fallback record for message %s: %s", msg_id, persist_err)
+                persisted = False
+                action_taken = (
+                    f"CRITICAL: Message failed processing ({str(e)}) and could not be persisted to the review queue ({str(persist_err)}). "
+                    "Manual intervention required."
+                )
+
             fb_parser = ParserOutput(
                 message_id=msg_id,
                 parsed_urls=[],
@@ -125,15 +170,15 @@ class PhishingPipelineOrchestrator:
             fb_action = ActionOutput(
                 message_id=msg_id,
                 final_status="HUMAN_REVIEW",
-                persisted=False,
-                action_taken="Emergency fallback to human review queue."
+                persisted=persisted,
+                action_taken=action_taken
             )
 
             return PipelineResult(
                 message_id=msg_id,
-                subject=getattr(email, 'subject', 'Error Message'),
-                sender=getattr(email, 'sender', 'unknown'),
-                received_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                subject=subject,
+                sender=sender,
+                received_at=received_at,
                 decision="HUMAN_REVIEW",
                 current_status="HUMAN_REVIEW",
                 max_score=0.0,
@@ -152,4 +197,3 @@ class PhishingPipelineOrchestrator:
         db_conn: Optional[sqlite3.Connection] = None
     ) -> List[PipelineResult]:
         return [self.process_email(e, db_conn=db_conn) for e in emails]
-

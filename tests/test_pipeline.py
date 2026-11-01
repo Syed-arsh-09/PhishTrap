@@ -208,8 +208,8 @@ def test_orchestrator_end_to_end_phishing():
 
 def test_orchestrator_unhandled_exception_fallback(monkeypatch):
     """
-    Verifies that an unhandled crash in any agent is caught by the orchestrator
-    and safely routed to HUMAN_REVIEW.
+    Verifies that an unhandled crash in any agent is caught by the orchestrator,
+    logged, and safely durably persisted to HUMAN_REVIEW in SQLite.
     """
     orchestrator = PhishingPipelineOrchestrator()
     
@@ -231,3 +231,45 @@ def test_orchestrator_unhandled_exception_fallback(monkeypatch):
     assert result.decision == "HUMAN_REVIEW"
     assert result.current_status == "HUMAN_REVIEW"
     assert "Simulated catastrophic parser explosion" in result.error_message
+    assert result.action_output.persisted is True
+    assert "durably queued for human review" in result.action_output.action_taken
+
+    # Empirically verify durable record in DB
+    from src.storage.db import get_db_context
+    from src.storage.repositories import MessageRepository
+    with get_db_context() as conn:
+        saved = MessageRepository.get_message(conn, "e2e_crash_01")
+        assert saved is not None
+        assert saved["current_status"] == "HUMAN_REVIEW"
+        assert saved["automated_decision"] == "HUMAN_REVIEW"
+
+
+def test_orchestrator_unhandled_exception_persistence_failure(monkeypatch):
+    """
+    Verifies that if both processing AND emergency persistence fail,
+    the result cleanly sets persisted=False and warns that the message is not queued.
+    """
+    orchestrator = PhishingPipelineOrchestrator()
+
+    def broken_process(email):
+        raise RuntimeError("Fatal worker error")
+
+    def broken_create(conn, msg, urls):
+        raise sqlite3.OperationalError("Disk I/O failure")
+
+    monkeypatch.setattr(orchestrator.parser, "process", broken_process)
+    monkeypatch.setattr("src.storage.repositories.MessageRepository.create_message", broken_create)
+
+    email = EmailPayload(
+        id="e2e_crash_db_fail",
+        subject="DB Failure Test",
+        sender="test@test.com",
+        body="DB Failure Payload"
+    )
+    result = orchestrator.process_email(email)
+
+    assert result.error_occurred is True
+    assert result.decision == "HUMAN_REVIEW"
+    assert result.current_status == "HUMAN_REVIEW"
+    assert result.action_output.persisted is False
+    assert "could not be persisted to the review queue" in result.action_output.action_taken
