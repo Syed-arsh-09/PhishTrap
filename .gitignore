@@ -28,12 +28,20 @@ __pycache__/
 Thumbs.db
 .DS_Store
 
-# GSD State Files
-.gsd/ARCHITECTURE.md
-.gsd/DECISIONS.md
-.gsd/JOURNAL.md
-.gsd/ROADMAP.md
-.gsd/SPEC.md
-.gsd/STACK.md
-.gsd/STATE.md
-.gsd/TODO.md
+# Agent Framework & Internal Tooling (Local Only)
+.agent/
+.agents/
+.gemini/
+.gsd/
+adapters/
+docs/
+model_capabilities.yaml
+GSD-STYLE.md
+PROJECT_RULES.md
+Agents.md
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+scripts/validate-*
+scripts/search_repo.*
+scripts/setup_search.*
