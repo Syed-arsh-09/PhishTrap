@@ -1,0 +1,136 @@
+{
+  "timestamp": "2026-11-01T10:06:50Z",
+  "dataset": "Frozen Held-Out Test Set (data/processed/test.csv)",
+  "total_test_samples": 56722,
+  "class_breakdown": {
+    "benign_count": 52184,
+    "phishing_count": 4538,
+    "phish_prevalence": 0.08
+  },
+  "url_model_evaluation": {
+    "roc_auc": 0.9773,
+    "pr_auc": 0.8887,
+    "default_threshold_0_5": {
+      "accuracy": 0.966,
+      "precision": 0.9262,
+      "recall": 0.6254,
+      "f1_score": 0.7466,
+      "confusion_matrix": {
+        "TP": 2838,
+        "FP": 226,
+        "TN": 51958,
+        "FN": 1700
+      }
+    },
+    "triage_policy_thresholds": {
+      "t_low": 0.05,
+      "t_high": 0.85,
+      "auto_allow_band": {
+        "count": 47945,
+        "percentage": 84.53,
+        "benign_cleared": 47625,
+        "benign_cleared_pct_of_total_benign": 91.26,
+        "false_negatives": 320,
+        "false_negative_rate": 0.0705
+      },
+      "human_review_band": {
+        "count": 6393,
+        "percentage": 11.27,
+        "benign_deferred": 4531,
+        "phish_deferred": 1862
+      },
+      "auto_quarantine_band": {
+        "count": 2384,
+        "percentage": 4.2,
+        "true_phish_blocked": 2356,
+        "false_positives": 28,
+        "false_positive_rate": 0.0005,
+        "quarantine_precision": 0.9883
+      },
+      "autonomous_tier_error_rate": 0.0069
+    }
+  },
+  "end_to_end_synthetic_email_evaluation": {
+    "label": "SYNTHETIC_DATASET",
+    "total_synthetic_emails": 104,
+    "automated_decisions": {
+      "ALLOW": 37,
+      "HUMAN_REVIEW": 44,
+      "QUARANTINE": 23
+    },
+    "current_queue_depth": 44,
+    "human_overrides_recorded": 1
+  },
+  "error_analysis": {
+    "top_false_positives": [
+      {
+        "url": "brno.me",
+        "domain": "brno.me",
+        "score": 0.9849,
+        "reason": "High token entropy / suspicious security keyword matches in query string"
+      },
+      {
+        "url": "rrurl.cn/l39hr5",
+        "domain": "rrurl.cn",
+        "score": 0.9787,
+        "reason": "High token entropy / suspicious security keyword matches in query string"
+      },
+      {
+        "url": "x45m8769.3web.me",
+        "domain": "3web.me",
+        "score": 0.9747,
+        "reason": "High token entropy / suspicious security keyword matches in query string"
+      },
+      {
+        "url": "trwrweweewwuirr.site90.com",
+        "domain": "site90.com",
+        "score": 0.9724,
+        "reason": "High token entropy / suspicious security keyword matches in query string"
+      },
+      {
+        "url": "maf.me",
+        "domain": "maf.me",
+        "score": 0.9716,
+        "reason": "High token entropy / suspicious security keyword matches in query string"
+      }
+    ],
+    "top_false_negatives": [
+      {
+        "url": "foamtek.ca/2001",
+        "domain": "foamtek.ca",
+        "score": 0.0004,
+        "reason": "Short, clean path on newly registered domain without obvious lexical triggers"
+      },
+      {
+        "url": "headofpeopleandculture.com",
+        "domain": "headofpeopleandculture.com",
+        "score": 0.0006,
+        "reason": "Short, clean path on newly registered domain without obvious lexical triggers"
+      },
+      {
+        "url": "cateringbyliz.org",
+        "domain": "cateringbyliz.org",
+        "score": 0.0008,
+        "reason": "Short, clean path on newly registered domain without obvious lexical triggers"
+      },
+      {
+        "url": "wyflnk.org/?page=20",
+        "domain": "wyflnk.org",
+        "score": 0.0008,
+        "reason": "Short, clean path on newly registered domain without obvious lexical triggers"
+      },
+      {
+        "url": "wyflnk.org/?page=3",
+        "domain": "wyflnk.org",
+        "score": 0.0013,
+        "reason": "Short, clean path on newly registered domain without obvious lexical triggers"
+      }
+    ]
+  },
+  "generated_figures": [
+    "reports\\figures\\roc_curve.png",
+    "reports\\figures\\pr_curve.png",
+    "reports\\figures\\confusion_matrix.png",
+    "reports\\figures\\triage_bands.png"
+  ]
+}
