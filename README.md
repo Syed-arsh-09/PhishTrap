@@ -1,11 +1,11 @@
-# PhishTrap 🎣🛡️
+# PhishTrap 
 ### Real-Time Phishing Detection Pipeline with Human-in-the-Loop (HITL) Override
 
 PhishTrap is an enterprise-grade phishing detection and triage pipeline. It combines deterministic feature engineering, a calibrated machine learning classifier, an automated triaging agent, and a Human-in-the-Loop (HITL) review dashboard with tamper-evident audit logging.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```text
 [ Incoming Email Stream ]
@@ -38,7 +38,7 @@ PhishTrap is an enterprise-grade phishing detection and triage pipeline. It comb
 
 ---
 
-## 📊 Dataset & Leakage-Free Splitting
+## Dataset & Leakage-Free Splitting
 
 The pipeline is trained and validated on a curated dataset of **378,849 clean URLs** derived from verified sources:
 - **No Domain Overlap**: Splits are strictly partitioned by the SHA-256 hash of the registered domain (handling public suffix providers like `.pages.dev`, `.github.io`, etc.). Domain overlap across train, val, and test is strictly **0.00%**.
@@ -49,7 +49,7 @@ The pipeline is trained and validated on a curated dataset of **378,849 clean UR
 
 ---
 
-## ⚡ Classifier Performance (Validation Set)
+## Classifier Performance (Validation Set)
 
 | Metric | Baseline Logistic Reg | HistGradientBoosting (Lexical) | Combined Hybrid Model |
 | :--- | :---: | :---: | :---: |
@@ -65,7 +65,7 @@ The pipeline is trained and validated on a curated dataset of **378,849 clean UR
 
 ---
 
-## 🚀 Quickstart & Setup
+## Quickstart & Setup
 
 ### 1. Prerequisites
 - Python 3.10+ (Tested on Python 3.12)
@@ -97,7 +97,7 @@ pytest
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 ├── .coderabbit.yaml          # Automated AI code review instructions
