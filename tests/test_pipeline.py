@@ -4,6 +4,7 @@ Unit and integration tests for the PhishTrap multi-agent pipeline and safety inv
 """
 
 import os
+import sqlite3
 import pytest
 from src.storage.db import init_db, get_db_connection
 from src.pipeline.contracts import (
