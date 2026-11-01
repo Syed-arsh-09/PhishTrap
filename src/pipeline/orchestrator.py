@@ -152,3 +152,4 @@ class PhishingPipelineOrchestrator:
         db_conn: Optional[sqlite3.Connection] = None
     ) -> List[PipelineResult]:
         return [self.process_email(e, db_conn=db_conn) for e in emails]
+

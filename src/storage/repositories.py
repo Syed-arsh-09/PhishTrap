@@ -18,11 +18,13 @@ class MessageRepository:
         urls: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
         """
-        Inserts a new message and its extracted URLs within the current transaction.
+        Inserts or replaces a message and its extracted URLs within the current transaction.
+        Cleans existing URLs if replacing to prevent constraint violations.
         """
+        conn.execute("DELETE FROM extracted_urls WHERE message_id = ?", (message["id"],))
         conn.execute(
             """
-            INSERT INTO messages (
+            INSERT OR REPLACE INTO messages (
                 id, subject, sender, body, received_at, max_score,
                 automated_decision, current_status, decided_at, decided_by
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
