@@ -73,3 +73,4 @@ def extract_urls_from_text(text: str) -> List[str]:
             seen.add(cleaned)
             urls.append(cleaned)
     return urls
+

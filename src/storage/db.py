@@ -104,3 +104,4 @@ def init_db(db_path: str = None) -> None:
             """)
     finally:
         conn.close()
+

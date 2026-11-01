@@ -247,3 +247,4 @@ class AuditRepository:
             (limit, offset)
         )
         return [dict(row) for row in cursor.fetchall()]
+

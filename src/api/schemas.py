@@ -87,3 +87,4 @@ class PredictResponse(BaseModel):
     urls: List[ExtractedUrlResponse]
     max_score: float
     automated_decision: str
+
