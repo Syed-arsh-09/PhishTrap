@@ -3,12 +3,14 @@ src/api/app.py
 FastAPI REST application for Real-Time Phishing Detection & HITL Override.
 """
 
+import os
 import time
 import uuid
 import contextlib
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from src.features.defang import extract_urls_from_text
 from src.storage.db import init_db, get_db_context
@@ -43,6 +45,15 @@ app = FastAPI(
     description="Real-Time Phishing Detection Pipeline with Human-in-the-Loop Override",
     version="1.0.0",
     lifespan=lifespan
+)
+
+# Enable CORS for local development (e.g. Vite on port 5173 or other frontend ports)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -264,3 +275,10 @@ def predict_urls(request: PredictRequest):
         "max_score": max_score,
         "automated_decision": decision
     }
+
+
+# Mount compiled React SPA frontend if available
+FRONTEND_DIST = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+if os.path.exists(FRONTEND_DIST):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
+

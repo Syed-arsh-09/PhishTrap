@@ -24,6 +24,11 @@ __pycache__/
 .tmp/
 *.log
 
+# Frontend Node Dependencies
+node_modules/
+frontend/node_modules/
+.npm/
+
 # OS generated
 Thumbs.db
 .DS_Store
