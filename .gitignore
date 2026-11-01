@@ -1,0 +1,39 @@
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Large Raw Datasets (Exceeds GitHub 100MB limit)
+merged_urls_dataset.csv
+data/raw/merged_urls_dataset.csv
+*.zip
+*.tar.gz
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Databases & Runtime State
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary & Log files
+.tmp/
+*.log
+
+# OS generated
+Thumbs.db
+.DS_Store
+
+# GSD State Files
+.gsd/ARCHITECTURE.md
+.gsd/DECISIONS.md
+.gsd/JOURNAL.md
+.gsd/ROADMAP.md
+.gsd/SPEC.md
+.gsd/STACK.md
+.gsd/STATE.md
+.gsd/TODO.md

@@ -1,0 +1,64 @@
+{
+  "dataset_name": "Merged URLs Dataset (Option B+)",
+  "source_file": "merged_urls_dataset.csv",
+  "timestamp": "2026-10-31T20:12:39Z",
+  "raw_counts": {
+    "total_rows": 3887459,
+    "labels": {
+      "phish": 50535,
+      "adult": 3369166,
+      "benign": 428058,
+      "malware": 39700
+    }
+  },
+  "cleaning_stats": {
+    "initial_benign_and_phish": 478593,
+    "dropped_no_host": 6,
+    "conflicting_urls_count": 0,
+    "dropped_conflict_rows": 0,
+    "dropped_duplicates": 3698,
+    "dropped_by_domain_capping": 96040,
+    "clean_rows": 378849,
+    "unique_registered_domains": 128980
+  },
+  "split_stats": {
+    "train": {
+      "total_urls": 262665,
+      "phish_count": 23441,
+      "benign_count": 239224,
+      "unique_domains": 90294,
+      "phish_ratio": 0.0892
+    },
+    "val": {
+      "total_urls": 59462,
+      "phish_count": 4363,
+      "benign_count": 55099,
+      "unique_domains": 19356,
+      "phish_ratio": 0.0734
+    },
+    "test": {
+      "total_urls": 56722,
+      "phish_count": 4538,
+      "benign_count": 52184,
+      "unique_domains": 19330,
+      "phish_ratio": 0.08
+    }
+  },
+  "shortcut_probes": {
+    "probe_a_host_only": {
+      "roc_auc": 0.9373,
+      "pr_auc": 0.8114,
+      "f1": 0.6858,
+      "precision": 0.9225,
+      "recall": 0.5457
+    },
+    "probe_b_path_query_only": {
+      "roc_auc": 0.91,
+      "pr_auc": 0.4337,
+      "f1": 0.2918,
+      "precision": 0.7851,
+      "recall": 0.1792
+    }
+  },
+  "execution_time_seconds": 60.92
+}

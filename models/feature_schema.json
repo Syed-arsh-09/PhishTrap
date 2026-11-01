@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "total_lexical_features": 26,
+  "feature_names": [
+    "url_len",
+    "host_len",
+    "pq_len",
+    "num_dots",
+    "num_hyphens",
+    "num_underscores",
+    "num_slashes",
+    "num_questionmarks",
+    "num_equals",
+    "num_at",
+    "num_amp",
+    "num_percent",
+    "num_digits",
+    "digit_ratio",
+    "letter_ratio",
+    "host_num_dots",
+    "host_num_hyphens",
+    "host_has_ip",
+    "subdomain_depth",
+    "entropy_url",
+    "entropy_host",
+    "kw_count",
+    "has_hex",
+    "punycode",
+    "pq_num_digits",
+    "pq_digit_ratio"
+  ],
+  "tfidf_ngram_range": [
+    3,
+    5
+  ],
+  "tfidf_max_features": 5000,
+  "suspicious_keywords": [
+    "verify",
+    "login",
+    "signin",
+    "update",
+    "secure",
+    "account",
+    "banking",
+    "confirm",
+    "wallet",
+    "admin",
+    "service",
+    "support",
+    "password",
+    "auth",
+    "token",
+    "security",
+    "billing",
+    "recovery"
+  ],
+  "thresholds": {
+    "t_low": 0.05,
+    "t_high": 0.85,
+    "decision_rules": {
+      "score_lt_t_low": "ALLOW",
+      "score_ge_t_low_and_lt_t_high": "HUMAN_REVIEW",
+      "score_ge_t_high": "QUARANTINE"
+    }
+  }
+}
