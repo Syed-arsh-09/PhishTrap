@@ -27,7 +27,7 @@ PhishTrap is an enterprise-grade phishing detection and triage pipeline. It comb
           └─► 0.05 ≤ p < 0.85      ── HUMAN_REVIEW (routed to SecOps triage queue)
                                               │
                                               ▼
-                                   [ 5. HITL SecOps Review Dashboard (Streamlit) ]
+                                   [ 5. HITL SecOps Review Dashboard (React SPA) ]
                                               │  - Defanged URL inspection
                                               │  - Feature impact explainability
                                               │  - Override action (RELEASE / CONFIRM_PHISH / RELABEL)
@@ -69,6 +69,7 @@ The pipeline is trained and validated on a curated dataset of **378,849 clean UR
 
 ### 1. Prerequisites
 - Python 3.10+ (Tested on Python 3.12)
+- Node.js 18+ (for building frontend assets, if modifying frontend)
 - Virtual environment recommended
 
 ### 2. Installation
@@ -82,11 +83,24 @@ python -m venv venv
 .\venv\Scripts\Activate.ps1   # On Windows
 # source venv/bin/activate    # On Linux / macOS
 
-# Install dependencies
+# Install Python dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Run Unit Tests & Quality Check
+### 3. Launch Web Console & REST API
+```powershell
+# Start FastAPI backend (serves REST API and precompiled React SPA at http://localhost:8000)
+uvicorn src.api.app:app --host 0.0.0.0 --port 8000
+```
+Open [http://localhost:8000](http://localhost:8000) in your browser to view the SecOps console.
+
+### 4. Run Simulated Multi-Agent Demo Stream
+```powershell
+# Replays 100 realistic synthetic emails through the 6-agent pipeline and persists to SQLite
+python scripts/run_demo_stream.py
+```
+
+### 5. Run Unit Tests & Quality Check
 ```powershell
 # Run pytest test suite
 pytest
@@ -95,36 +109,59 @@ pytest
 .\scripts\check_and_push.ps1 -CommitMessage "your commit message"
 ```
 
+### 6. Frozen Test Set Evaluation & Active Learning
+```powershell
+# Evaluate frozen test set (56,722 URLs) and update publication figures
+python scripts/evaluate.py
+
+# Run active learning retraining feedback loop from SecOps analyst overrides
+python scripts/retrain_from_overrides.py
+```
+
 ---
 
 ## Repository Structure
 
 ```text
-├── .coderabbit.yaml          # Automated AI code review instructions
-├── requirements.txt          # Python dependencies
-├── pytest.ini                # Pytest configuration
-├── README.md                 # Project documentation
+├── .coderabbit.yaml             # Automated AI code review instructions
+├── requirements.txt             # Python dependencies
+├── pytest.ini                   # Pytest configuration
+├── README.md                    # Project documentation
 ├── data/
-│   └── processed/            # Leakage-free train.csv, val.csv, test.csv + data card
+│   └── processed/               # Leakage-free train.csv, val.csv, test.csv + data card
+├── frontend/
+│   ├── dist/                    # Precompiled production bundle mounted by FastAPI
+│   ├── src/                     # React + Tailwind SPA source code
+│   ├── package.json             # Frontend dependencies
+│   └── vite.config.js           # Vite build configuration
 ├── models/
-│   ├── classifier.pkl        # Serialized hybrid phishing classifier
-│   ├── feature_schema.json   # Lexical & n-gram feature schema
-│   └── validation_report.json# Empirical metrics & threshold analysis
+│   ├── classifier.pkl           # Serialized hybrid phishing classifier
+│   ├── feature_schema.json      # Lexical & n-gram feature schema
+│   ├── validation_report.json   # Empirical metrics & threshold analysis
+│   └── retraining_report.json   # Active learning retraining telemetry
+├── reports/
+│   ├── metrics.json             # Frozen test set performance metrics
+│   └── figures/                 # Confusion matrix, ROC, PR, and triage band curves
 ├── src/
-│   ├── features/             # Deterministic URL normalization & lexical extractors
-│   ├── storage/              # SQLite DB & audit repositories (Part 3)
-│   ├── api/                  # FastAPI REST endpoints (Part 3)
-│   └── pipeline/             # Multi-agent orchestrators (Part 4)
+│   ├── features/                # Deterministic URL normalization & lexical extractors
+│   ├── storage/                 # SQLite DB schema & repository access layer
+│   ├── api/                     # FastAPI REST endpoints, schemas, and inference
+│   └── pipeline/                # Deterministic multi-agent pipeline and contracts
 ├── scripts/
-│   ├── part1_prepare_data.py # Dataset normalization and domain hashing
-│   ├── part2_train_model.py  # Model training, calibration, and triage evaluation
-│   └── check_and_push.ps1    # Pytest + CodeRabbit + GitHub push loop
+│   ├── part1_prepare_data.py    # Dataset normalization and domain hashing
+│   ├── part2_train_model.py     # Model training, calibration, and triage evaluation
+│   ├── run_demo_stream.py       # Simulated 100-email multi-agent stream replayer
+│   ├── evaluate.py              # Frozen test set evaluation and figure generation
+│   ├── retrain_from_overrides.py# Active learning feedback loop
+│   └── check_and_push.ps1       # Automated test suite and git push loop
 └── tests/
-    └── test_features.py      # Lexical extraction unit tests
+    ├── test_api.py              # FastAPI endpoints and repository tests
+    ├── test_evaluation.py       # Metrics, figures, and active learning tests
+    ├── test_features.py         # Lexical feature extraction tests
+    └── test_pipeline.py         # Multi-agent contracts and safety invariant tests
 ```
 
 ---
 
 ## 🤖 CodeRabbit & CI Integration
 Code quality, security checks, and data leakage protection are continuously monitored via `.coderabbit.yaml`. Local changes can be validated using the automated check loop prior to upstream push.
-
