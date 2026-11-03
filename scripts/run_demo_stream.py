@@ -111,7 +111,7 @@ def main():
     conn = get_db_connection()
 
     # 2. Initialize Orchestrator
-    orchestrator = PhishingPipelineOrchestrator(t_low=0.05, t_high=0.85)
+    orchestrator = PhishingPipelineOrchestrator()
     emails = generate_synthetic_stream(count=100)
 
     print(f"[*] Generated 100 reproducible synthetic test emails.")

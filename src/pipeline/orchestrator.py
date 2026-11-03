@@ -25,6 +25,7 @@ from src.pipeline.agents import (
     ActionAgent,
     AuditAgent
 )
+from src.api.inference import DEFAULT_T_LOW, DEFAULT_T_HIGH
 from src.storage.db import get_db_context
 from src.storage.repositories import MessageRepository
 
@@ -37,7 +38,12 @@ class PhishingPipelineOrchestrator:
       Email -> ParserAgent -> FeatureAgent -> ClassifierAgent -> TriageAgent -> ActionAgent -> AuditAgent
     """
 
-    def __init__(self, t_low: float = 0.05, t_high: float = 0.85, model_artifact: dict = None):
+    def __init__(
+        self,
+        t_low: float = DEFAULT_T_LOW,
+        t_high: float = DEFAULT_T_HIGH,
+        model_artifact: dict = None
+    ):
         self.t_low = t_low
         self.t_high = t_high
         self.parser = ParserAgent()

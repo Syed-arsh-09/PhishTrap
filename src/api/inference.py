@@ -21,6 +21,9 @@ MODEL_PATH = os.path.join(
     "classifier.pkl"
 )
 
+DEFAULT_T_LOW = 0.05
+DEFAULT_T_HIGH = 0.85
+
 _MODEL_ARTIFACT = None
 
 
@@ -91,8 +94,8 @@ def score_urls(raw_urls: List[str], model_artifact: dict = None) -> Tuple[List[D
     scaler = artifact["scaler"]
     tfidf = artifact["tfidf"]
     model = artifact["model"]
-    t_low = artifact.get("t_low", 0.05)
-    t_high = artifact.get("t_high", 0.85)
+    t_low = artifact.get("t_low", DEFAULT_T_LOW)
+    t_high = artifact.get("t_high", DEFAULT_T_HIGH)
     feature_names = artifact.get("feature_names", FEATURE_NAMES)
 
     # 1. Normalise URLs

@@ -17,7 +17,12 @@ from src.features.lexical import (
     batch_extract_features,
     FEATURE_NAMES
 )
-from src.api.inference import get_model_artifact, explain_url_features
+from src.api.inference import (
+    get_model_artifact,
+    explain_url_features,
+    DEFAULT_T_LOW,
+    DEFAULT_T_HIGH
+)
 from src.storage.db import get_db_context
 from src.storage.repositories import MessageRepository
 from src.pipeline.contracts import (
@@ -198,8 +203,8 @@ class TriageAgent:
         self,
         parser_output: ParserOutput,
         classifier_output: ClassifierOutput,
-        t_low: float = 0.05,
-        t_high: float = 0.85
+        t_low: float = DEFAULT_T_LOW,
+        t_high: float = DEFAULT_T_HIGH
     ) -> TriageOutput:
         # Mandatory Safety Invariant: Any error routes to HUMAN_REVIEW, never ALLOW
         if parser_output.is_malformed:

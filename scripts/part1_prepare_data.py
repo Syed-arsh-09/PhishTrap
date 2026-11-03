@@ -9,74 +9,19 @@ Produces:
 """
 
 import os
-import re
+import sys
 import json
-import html
 import hashlib
 import time
-from typing import Tuple, Optional
 import pandas as pd
 import numpy as np
-import tldextract
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, average_precision_score, f1_score, precision_score, recall_score
 
-# Initialize tldextract offline to prevent network delays and respect private suffixes
-extract_tld = tldextract.TLDExtract(suffix_list_urls=None, include_psl_private_domains=True)
-
-
-def normalize_url(raw_url: str) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
-    """
-    Normalizes a URL by:
-      - HTML unescaping (&amp; -> &)
-      - Stripping scheme (http://, https://, etc.)
-      - Stripping userinfo (user:pass@)
-      - Stripping port (:8080)
-      - Stripping leading www. or www[0-9].
-      - Stripping fragment (#...)
-      - Stripping trailing slash
-    Returns:
-      (normalized_url, host, registered_domain, path_query)
-    """
-    if not isinstance(raw_url, str) or not raw_url.strip():
-        return None, None, None, None
-
-    u = html.unescape(raw_url.strip())
-    # Strip scheme
-    u = re.sub(r'^[a-zA-Z][a-zA-Z0-9+.-]*://', '', u)
-    # Strip userinfo
-    u = re.sub(r'^[^/@]+@', '', u)
-    
-    # Split host and path/query/fragment
-    m = re.match(r'^([^/?#]+)(.*)$', u)
-    if not m:
-        return None, None, None, None
-
-    host_port, remainder = m.group(1), m.group(2)
-    
-    # Strip port
-    host = re.sub(r':[0-9]+$', '', host_port).lower()
-    # Strip leading www
-    host = re.sub(r'^www\d*\.', '', host)
-    if not host or '.' not in host and not re.match(r'^\d+\.\d+\.\d+\.\d+$', host):
-        # Must have at least a dot or be an IP
-        if host != 'localhost':
-            return None, None, None, None
-
-    # Clean remainder: strip fragment and trailing slashes
-    remainder = re.sub(r'#.*$', '', remainder)
-    remainder = remainder.rstrip('/')
-    
-    norm = (host + remainder).rstrip('/')
-    if not norm:
-        return None, None, None, None
-
-    tld_res = extract_tld(host)
-    # Use top domain under public suffix (handles pages.dev, github.io as independent groups)
-    domain = tld_res.top_domain_under_public_suffix or tld_res.domain or host
-    
-    return norm.lower(), host, domain.lower(), remainder
+# Ensure project root is on PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.features.lexical import normalize_url
 
 
 def get_split(domain: str) -> str:
