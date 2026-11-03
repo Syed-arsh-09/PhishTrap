@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import StatusBadge from './StatusBadge';
 import ScoreBar from './ScoreBar';
-import { Play, Sparkles, AlertCircle, CheckCircle, ArrowRight, Layers } from 'lucide-react';
+import { Play, Sparkles, AlertCircle, Layers } from 'lucide-react';
 import { ingestEmail } from '../api';
 
 const presets = [

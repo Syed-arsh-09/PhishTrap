@@ -3,7 +3,7 @@ import StatusBadge from './StatusBadge';
 import ScoreBar from './ScoreBar';
 import MessageDossier from './MessageDossier';
 import OverrideModal from './OverrideModal';
-import { Search, Inbox, ShieldCheck, Filter } from 'lucide-react';
+import { Search, Inbox, ShieldCheck } from 'lucide-react';
 
 export default function ReviewQueueTab({
   queue = [],

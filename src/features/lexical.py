@@ -11,9 +11,8 @@ Provides:
 import re
 import html
 import math
-from typing import Dict, List, Any, Tuple, Optional, Union
+from typing import Dict, List, Tuple, Optional, Union
 import pandas as pd
-import numpy as np
 import tldextract
 
 _extract_tld = tldextract.TLDExtract(suffix_list_urls=None, include_psl_private_domains=True)

@@ -15,7 +15,6 @@ from typing import List, Dict, Any
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.storage.db import init_db, get_db_connection
-from src.storage.repositories import MessageRepository
 from src.pipeline.orchestrator import PhishingPipelineOrchestrator
 
 

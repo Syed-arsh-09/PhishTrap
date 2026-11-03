@@ -1,7 +1,7 @@
 import React from 'react';
 import StatusBadge from './StatusBadge';
 import ScoreBar from './ScoreBar';
-import { Mail, Globe, Shield, Calendar, AlertOctagon, User, History } from 'lucide-react';
+import { Mail, Globe, Shield, Calendar, User, History } from 'lucide-react';
 
 export default function MessageDossier({ message, onOpenOverride }) {
   if (!message) {

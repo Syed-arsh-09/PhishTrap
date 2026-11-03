@@ -36,7 +36,7 @@ from sklearn.metrics import (
 
 # Ensure project root is in PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.features.lexical import batch_extract_features, FEATURE_NAMES
+from src.features.lexical import batch_extract_features
 from src.storage.db import get_db_context
 from src.storage.repositories import MessageRepository
 

@@ -6,8 +6,6 @@ Tests for Part 6: Evaluation Metrics, Figures, and Active Learning Retraining Lo
 import os
 import json
 import pickle
-import pytest
-from scripts.retrain_from_overrides import extract_override_training_samples
 
 
 def test_metrics_json_integrity():

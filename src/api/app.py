@@ -6,8 +6,9 @@ FastAPI REST application for Real-Time Phishing Detection & HITL Override.
 import os
 import time
 import uuid
+import logging
 import contextlib
-from typing import List, Optional
+from typing import List
 from fastapi import FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -28,6 +29,9 @@ from src.api.schemas import (
 )
 
 
+logger = logging.getLogger(__name__)
+
+
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initializes SQLite schema and warms up model cache on boot."""
@@ -35,7 +39,7 @@ async def lifespan(app: FastAPI):
     try:
         get_model_artifact()
     except Exception as e:
-        print(f"[WARNING] Model artifact could not be loaded at startup: {e}")
+        logger.warning("Model artifact could not be loaded at startup: %s", e)
     yield
 
 

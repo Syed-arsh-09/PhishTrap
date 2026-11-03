@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, ShieldAlert, CheckCircle2, Clock, Activity, Cpu } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, Clock, Activity, Cpu } from 'lucide-react';
 
 export default function AnalyticsTab({ metrics }) {
   if (!metrics) {

@@ -21,7 +21,6 @@ from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_sco
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.features.lexical import batch_extract_features, FEATURE_NAMES
 from src.storage.db import get_db_context
-from src.storage.repositories import AuditRepository, MessageRepository
 
 
 def extract_override_training_samples():

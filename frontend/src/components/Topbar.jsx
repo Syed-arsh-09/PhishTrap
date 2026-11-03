@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, RefreshCw, Radio, UserCheck, Layers } from 'lucide-react';
+import { Shield, RefreshCw, UserCheck } from 'lucide-react';
 
 export default function Topbar({ 
   analyst, 

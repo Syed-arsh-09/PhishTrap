@@ -6,8 +6,7 @@ Deterministic agents with explicit typed contracts for the PhishTrap architectur
 import time
 import uuid
 import sqlite3
-import numpy as np
-from typing import List, Dict, Any, Optional
+from typing import List, Optional
 from scipy.sparse import hstack
 import tldextract
 

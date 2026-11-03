@@ -92,6 +92,7 @@ class PhishingPipelineOrchestrator:
                 triage_output=triage_output,
                 classifier_output=classifier_output
             )
+            logger.debug("Audit record generated: %s for %s", audit_output.action, audit_output.message_id)
 
             elapsed_ms = round((time.time() - start_time) * 1000, 2)
 

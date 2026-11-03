@@ -5,7 +5,6 @@ Unit tests for lexical feature extraction and model inference consistency.
 
 import os
 import pickle
-import pytest
 from src.features.lexical import extract_lexical_features, shannon_entropy, FEATURE_NAMES
 
 
