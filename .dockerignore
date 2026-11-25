@@ -1,0 +1,37 @@
+# Bytecode & Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Large training datasets & local SQLite DB (do NOT bundle 160MB+ files)
+merged_urls_dataset.csv
+data/processed/
+data/phishing_pipeline.db
+
+# Git & CI/CD configs
+.git/
+.gitignore
+.github/
+.coderabbit.yaml
+
+# Testing & development logs
+.pytest_cache/
+tests/
+*.log
+
+# Frontend source & dev dependencies (frontend/dist is already compiled and mounted)
+frontend/node_modules/
+frontend/src/
+frontend/package.json
+frontend/package-lock.json
+frontend/vite.config.js
+frontend/index.html
+frontend/postcss.config.js
+frontend/tailwind.config.js

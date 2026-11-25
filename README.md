@@ -72,7 +72,7 @@ The pipeline is trained and validated on a curated dataset of **378,849 clean UR
 - Node.js 18+ (for building frontend assets, if modifying frontend)
 - Virtual environment recommended
 
-### 2. Installation
+### 2. Installation (Local)
 ```powershell
 # Clone the repository
 git clone https://github.com/Syed-arsh-09/PhishTrap.git
@@ -85,6 +85,16 @@ python -m venv venv
 
 # Install Python dependencies
 pip install -r requirements.txt
+```
+
+### 2b. Run with Docker (Alternative - Zero Configuration)
+```powershell
+# Build and run containerized service
+docker build -t phishtrap .
+docker run -p 8000:8000 phishtrap
+
+# Or run with docker-compose
+docker compose up -d
 ```
 
 ### 3. Launch Web Console & REST API

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  phishtrap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: phishtrap-app
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    volumes:
+      # Persist SQLite audit database across container restarts
+      - phishtrap_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  phishtrap_data:
