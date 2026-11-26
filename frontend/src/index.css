@@ -35,8 +35,8 @@
 }
 
 /* ==========================================================================
-   DEFAULT LIGHT MODE STYLING FOR SOC CONSOLE
-   Transforms all dark surfaces into crisp, modern enterprise light theme
+   ENTERPRISE LIGHT MODE RULES
+   Ensures 100% contrast & zero invisible text across all pages and states
    ========================================================================== */
 
 html.light,
@@ -48,38 +48,100 @@ html.dark {
   color-scheme: dark;
 }
 
-/* App Background & Base Typography */
+/* 1. Base App Surfaces & Typography */
 html.light body,
 html:not(.dark) body {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
 }
 
-/* Topbar & Sticky Header */
+/* Topbar Header & Nav */
 html.light header,
 html:not(.dark) header {
-  background-color: rgba(255, 255, 255, 0.94) !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
   border-color: #E2E8F0 !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Main Background Remap */
+html.light header nav,
+html:not(.dark) header nav {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* Topbar Active & Inactive Tabs */
+html.light nav button,
+html:not(.dark) nav button {
+  color: #475569 !important;
+}
+
+html.light nav button:hover,
+html:not(.dark) nav button:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.light nav button.bg-gradient-to-r,
+html:not(.dark) nav button.bg-gradient-to-r {
+  background: #FFFFFF !important;
+  color: #4338CA !important;
+  border-color: #818CF8 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Topbar Analyst Control & Inputs */
+html.light header input,
+html:not(.dark) header input {
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* 2. Background Surface Overrides (Turn all dark navy blocks into crisp light cards) */
 html.light .bg-\[\#070A12\],
 html:not(.dark) .bg-\[\#070A12\] {
   background-color: #F8FAFC !important;
-}
-
-/* Card Surface Remaps */
-html.light .bg-\[\#0D1424\],
-html:not(.dark) .bg-\[\#0D1424\] {
-  background-color: #FFFFFF !important;
   border-color: #E2E8F0 !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
 html.light .bg-\[\#0B101D\]\/90,
 html:not(.dark) .bg-\[\#0B101D\]\/90 {
-  background-color: rgba(255, 255, 255, 0.94) !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+}
+
+html.light .bg-\[\#0D1424\],
+html:not(.dark) .bg-\[\#0D1424\] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .bg-\[\#0D1424\]\/40,
+html.light .bg-\[\#0A0F1D\]\/50,
+html:not(.dark) .bg-\[\#0D1424\]\/40,
+html:not(.dark) .bg-\[\#0A0F1D\]\/50 {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Selected item in Review Queue */
+html.light .bg-\[\#141E34\],
+html:not(.dark) .bg-\[\#141E34\] {
+  background-color: #EEF2FF !important;
+  border-color: #6366F1 !important;
+  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Hover item in Review Queue */
+html.light .hover\:bg-\[\#10182C\]:hover,
+html:not(.dark) .hover\:bg-\[\#10182C\]:hover {
+  background-color: #F8FAFC !important;
+}
+
+/* Message dossier URL item card */
+html.light .bg-\[\#070B16\],
+html:not(.dark) .bg-\[\#070B16\] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
 }
 
 html.light .bg-\[\#131C31\],
@@ -92,6 +154,7 @@ html.light .bg-\[\#0E1527\],
 html:not(.dark) .bg-\[\#0E1527\] {
   background-color: #F1F5F9 !important;
   border-color: #CBD5E1 !important;
+  color: #334155 !important;
 }
 
 html.light .bg-\[\#0E1626\],
@@ -100,25 +163,55 @@ html:not(.dark) .bg-\[\#0E1626\] {
   border-color: #E2E8F0 !important;
 }
 
-/* Borders */
-html.light .border-white\/10,
-html.light .border-white\/5,
-html.light .border-white\/20,
-html:not(.dark) .border-white\/10,
-html:not(.dark) .border-white\/5,
-html:not(.dark) .border-white\/20 {
+html.light .bg-\[\#0A0F1A\],
+html:not(.dark) .bg-\[\#0A0F1A\] {
+  background-color: #F8FAFC !important;
   border-color: #E2E8F0 !important;
 }
 
-/* Typography Remaps */
+html.light .bg-\[\#121B30\],
+html:not(.dark) .bg-\[\#121B30\] {
+  background-color: #F1F5F9 !important;
+}
+
+/* Defanged URL Code Box & Pre Blocks */
+html.light .bg-slate-950\/60,
+html:not(.dark) .bg-slate-950\/60 {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #0E7490 !important;
+}
+
+html.light .bg-cyan-950\/30,
+html:not(.dark) .bg-cyan-950\/30 {
+  background-color: #E0F2FE !important;
+  border-color: #BAE6FD !important;
+  color: #0369A1 !important;
+}
+
+/* ScoreBar backgrounds in light mode */
+html.light .bg-slate-800\/80,
+html.light .bg-slate-900,
+html:not(.dark) .bg-slate-800\/80,
+html:not(.dark) .bg-slate-900 {
+  background-color: #E2E8F0 !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* 3. High-Contrast Typography Overrides (Fix invisible white/pale text on light cards) */
+
+/* Headings & primary text */
 html.light .text-white,
 html:not(.dark) .text-white {
   color: #0F172A !important;
 }
 
 html.light .text-slate-100,
+html:not(.dark) .text-slate-100 {
+  color: #0F172A !important;
+}
+
 html.light .text-slate-200,
-html:not(.dark) .text-slate-100,
 html:not(.dark) .text-slate-200 {
   color: #1E293B !important;
 }
@@ -130,10 +223,160 @@ html:not(.dark) .text-slate-300 {
 
 html.light .text-slate-400,
 html:not(.dark) .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-500,
+html:not(.dark) .text-slate-500 {
   color: #64748B !important;
 }
 
-/* Subtle Badges & Chips */
+/* 4. Fix Neon & Pale Status / Signal Colors (Convert to rich, high-contrast accessible tones) */
+
+/* Amber / Warning / Human Review (Yellow on white is invisible -> convert to rich Amber/Bronze) */
+html.light .text-amber-300,
+html.light .text-amber-400,
+html:not(.dark) .text-amber-300,
+html:not(.dark) .text-amber-400 {
+  color: #B45309 !important; /* amber-700 */
+}
+
+html.light .bg-amber-500\/10,
+html.light .bg-amber-500\/20,
+html:not(.dark) .bg-amber-500\/10,
+html:not(.dark) .bg-amber-500\/20 {
+  background-color: #FEF3C7 !important; /* amber-100 */
+  border-color: #FDE68A !important;
+}
+
+/* Emerald / Safe / Auto-Allow (Pale mint on white is washed out -> convert to deep Forest Emerald) */
+html.light .text-emerald-300,
+html.light .text-emerald-400,
+html:not(.dark) .text-emerald-300,
+html:not(.dark) .text-emerald-400 {
+  color: #047857 !important; /* emerald-700 */
+}
+
+html.light .bg-emerald-500\/10,
+html.light .bg-emerald-500\/20,
+html:not(.dark) .bg-emerald-500\/10,
+html:not(.dark) .bg-emerald-500\/20 {
+  background-color: #D1FAE5 !important; /* emerald-100 */
+  border-color: #A7F3D0 !important;
+}
+
+/* Red / Danger / Quarantine (Coral on white is low contrast -> convert to deep Crimson) */
+html.light .text-red-300,
+html.light .text-red-400,
+html:not(.dark) .text-red-300,
+html:not(.dark) .text-red-400 {
+  color: #B91C1C !important; /* red-700 */
+}
+
+html.light .bg-red-500\/10,
+html.light .bg-red-500\/20,
+html.light .bg-red-600\/20,
+html:not(.dark) .bg-red-500\/10,
+html:not(.dark) .bg-red-500\/20,
+html:not(.dark) .bg-red-600\/20 {
+  background-color: #FEE2E2 !important; /* red-100 */
+  border-color: #FECACA !important;
+}
+
+/* Cyan / Links / Decided-By (Bright cyan on white is invisible -> convert to deep Ocean Cyan) */
+html.light .text-cyan-300,
+html.light .text-cyan-400,
+html:not(.dark) .text-cyan-300,
+html:not(.dark) .text-cyan-400 {
+  color: #0E7490 !important; /* cyan-700 */
+}
+
+/* Indigo / Purple / Tags (Pale lavender on white is washed out -> convert to deep Royal Indigo) */
+html.light .text-indigo-300,
+html.light .text-indigo-400,
+html:not(.dark) .text-indigo-300,
+html:not(.dark) .text-indigo-400 {
+  color: #4338CA !important; /* indigo-700 */
+}
+
+html.light .bg-indigo-500\/10,
+html.light .bg-indigo-500\/20,
+html:not(.dark) .bg-indigo-500\/10,
+html:not(.dark) .bg-indigo-500\/20 {
+  background-color: #EEF2FF !important; /* indigo-50 */
+  border-color: #C7D2FE !important;
+}
+
+html.light .text-purple-300,
+html.light .text-purple-400,
+html:not(.dark) .text-purple-300,
+html:not(.dark) .text-purple-400 {
+  color: #6D28D9 !important; /* purple-700 */
+}
+
+html.light .bg-purple-500\/10,
+html.light .bg-purple-500\/20,
+html:not(.dark) .bg-purple-500\/10,
+html:not(.dark) .bg-purple-500\/20 {
+  background-color: #F3E8FF !important; /* purple-100 */
+  border-color: #E9D5FF !important;
+}
+
+html.light .text-blue-300,
+html.light .text-blue-400,
+html:not(.dark) .text-blue-300,
+html:not(.dark) .text-blue-400 {
+  color: #1D4ED8 !important; /* blue-700 */
+}
+
+html.light .bg-blue-500\/10,
+html.light .bg-blue-500\/20,
+html:not(.dark) .bg-blue-500\/10,
+html:not(.dark) .bg-blue-500\/20 {
+  background-color: #DBEAFE !important; /* blue-100 */
+  border-color: #BFDBFE !important;
+}
+
+/* 5. Inputs, Search, Placeholders & Textareas */
+html.light input[type="text"],
+html.light textarea,
+html.light select,
+html:not(.dark) input[type="text"],
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light input[type="text"]:focus,
+html.light textarea:focus,
+html:not(.dark) input[type="text"]:focus,
+html:not(.dark) textarea:focus {
+  border-color: #6366F1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder,
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* 6. General Border Utility Overrides */
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html:not(.dark) .border-white\/5,
+html:not(.dark) .border-white\/10,
+html:not(.dark) .border-white\/15,
+html:not(.dark) .border-white\/20 {
+  border-color: #E2E8F0 !important;
+}
+
+/* 7. Subtle Badge Chips & Hover States */
 html.light .bg-white\/5,
 html:not(.dark) .bg-white\/5 {
   background-color: #F1F5F9 !important;
@@ -150,40 +393,38 @@ html:not(.dark) .hover\:bg-slate-800:hover {
   background-color: #E2E8F0 !important;
 }
 
-/* Input Fields & Textareas */
-html.light input[type="text"],
-html.light textarea,
-html.light select,
-html:not(.dark) input[type="text"],
-html:not(.dark) textarea,
-html:not(.dark) select {
-  color: #0F172A !important;
-  border-color: #CBD5E1 !important;
+/* 8. Preserve Crisp White Text on Solid Buttons */
+html.light button.bg-indigo-600,
+html.light button.bg-indigo-600 *,
+html.light .bg-indigo-600,
+html.light .bg-indigo-600 *,
+html.light button.bg-red-600,
+html.light button.bg-red-600 *,
+html.light .bg-red-600,
+html.light .bg-red-600 *,
+html.light button.bg-emerald-600,
+html.light button.bg-emerald-600 *,
+html:not(.dark) button.bg-indigo-600,
+html:not(.dark) button.bg-indigo-600 *,
+html:not(.dark) .bg-indigo-600,
+html:not(.dark) .bg-indigo-600 *,
+html:not(.dark) button.bg-red-600,
+html:not(.dark) button.bg-red-600 *,
+html:not(.dark) .bg-red-600,
+html:not(.dark) .bg-red-600 *,
+html:not(.dark) button.bg-emerald-600,
+html:not(.dark) button.bg-emerald-600 * {
+  color: #FFFFFF !important;
 }
 
-html.light input::placeholder,
-html.light textarea::placeholder,
-html:not(.dark) input::placeholder,
-html:not(.dark) textarea::placeholder {
-  color: #94A3B8 !important;
-}
-
-/* Code & Pre Blocks */
-html.light pre,
-html.light code,
-html:not(.dark) pre,
-html:not(.dark) code {
-  color: #0F172A !important;
-}
-
-/* Modal Backdrops & Overlays */
+/* 9. Modal & Backdrops */
 html.light .bg-black\/60,
 html:not(.dark) .bg-black\/60 {
   background-color: rgba(15, 23, 42, 0.45) !important;
   backdrop-filter: blur(4px) !important;
 }
 
-/* Footer */
+/* 10. Footer */
 html.light footer,
 html:not(.dark) footer {
   border-color: #E2E8F0 !important;

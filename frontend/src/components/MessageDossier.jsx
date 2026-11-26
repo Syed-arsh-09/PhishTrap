@@ -148,7 +148,7 @@ export default function MessageDossier({ message, onOpenOverride }) {
                         key={fIdx}
                         className="font-mono text-[10px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20"
                       >
-                        {feat.feature}: {typeof feat.value === 'number' ? feat.value.toFixed(2) : feat.value}
+                        {typeof feat === 'string' ? feat : `${feat.feature}: ${typeof feat.value === 'number' ? feat.value.toFixed(2) : feat.value}`}
                       </span>
                     ))}
                   </div>
