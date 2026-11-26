@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PhishTrap</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="shield-logo">🛡️</div>
+        <div>
+          <h1 class="title">PhishTrap</h1>
+          <p class="subtitle">AI Threat Shield</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" title="Toggle Light/Dark Mode" aria-label="Toggle Theme">
+          <span id="theme-icon">☀️</span>
+        </button>
+        <div class="status-indicator" id="api-status" title="Checking API status...">
+          <span class="status-dot"></span>
+          <span class="status-label">API</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Active Tab Safety Card -->
+    <div class="card" id="tab-card">
+      <div class="card-header">
+        <span class="card-title">CURRENT PAGE</span>
+        <span class="badge" id="tab-badge">Scanning...</span>
+      </div>
+      
+      <div class="url-display" id="tab-url">Detecting active tab...</div>
+      
+      <div class="score-container">
+        <div class="score-header">
+          <span>Phishing Probability</span>
+          <span class="score-value" id="tab-score">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="tab-progress"></div>
+        </div>
+      </div>
+
+      <div class="signals-box" id="tab-signals" style="display: none;">
+        <span class="signals-title">Explainability Signals:</span>
+        <ul class="signals-list" id="tab-signals-list"></ul>
+      </div>
+    </div>
+
+    <!-- Quick URL Scanner -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">QUICK URL SCANNER</span>
+      </div>
+      <div class="input-group">
+        <input type="text" id="manual-url" placeholder="Paste suspicious link here..." spellcheck="false">
+        <button id="btn-scan">Scan</button>
+      </div>
+      <div id="manual-result" class="manual-result" style="display: none;"></div>
+    </div>
+
+    <!-- Footer & Links -->
+    <footer class="footer">
+      <button class="link-btn" id="btn-settings-toggle">⚙️ Settings</button>
+      <a href="http://localhost:8000" target="_blank" class="link-btn primary" id="btn-open-console">
+        SecOps Console ↗
+      </a>
+    </footer>
+
+    <!-- Collapsible Settings Panel -->
+    <div class="settings-panel" id="settings-panel" style="display: none;">
+      <label for="api-url-input">PhishTrap API Base URL:</label>
+      <div class="input-group">
+        <input type="text" id="api-url-input" value="http://localhost:8000" spellcheck="false">
+        <button id="btn-save-settings">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ import SandboxTab from './components/SandboxTab';
 import { fetchHealth, fetchQueue, fetchAuditLog, fetchMetrics, fetchMessage } from './api';
 
 export default function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('phishtrap_theme') || 'light');
   const [activeTab, setActiveTab] = useState('queue');
   const [analyst, setAnalyst] = useState('analyst_arsh');
   const [health, setHealth] = useState(null);
@@ -15,6 +16,18 @@ export default function App() {
   const [auditEntries, setAuditEntries] = useState([]);
   const [metrics, setMetrics] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Apply theme class to document element
+  useEffect(() => {
+    localStorage.setItem('phishtrap_theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   const loadData = useCallback(async () => {
     setIsRefreshing(true);
@@ -75,6 +88,8 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         queueCount={queue.length}
+        theme={theme}
+        setTheme={setTheme}
       />
 
       {/* Main View Area */}

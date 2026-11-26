@@ -42,6 +42,11 @@ def get_model_artifact(model_path: str = None) -> dict:
     with open(path, "rb") as f:
         artifact = pickle.load(f)
 
+    # Scikit-learn version backward compatibility patch
+    model = artifact.get("model")
+    if model is not None and not hasattr(model, "multi_class"):
+        setattr(model, "multi_class", "auto")
+
     if model_path is None:
         _MODEL_ARTIFACT = artifact
     return artifact
