@@ -110,16 +110,36 @@ Open [http://localhost:8000](http://localhost:8000) in your browser to view the 
 python scripts/run_demo_stream.py
 ```
 
-### 5. Run Unit Tests & Quality Check
+### 5. Inbound Email Gateway (Real-Time Mailbox Protection)
+Monitor any IMAP mailbox (Gmail, Outlook, corporate) in real-time. Incoming unread emails are parsed (plain text and HTML `<a>` targets), evaluated via the triage policy, and automatically quarantined:
 ```powershell
-# Run pytest test suite
+# 1. Test Gateway Logic (Simulation mode - No credentials required)
+python scripts/email_watcher.py --simulate
+
+# 2. Audit Mode (Dry Run - Scans unread emails without moving them)
+python scripts/email_watcher.py --user "you@gmail.com" --password "your-app-password" --dry-run
+
+# 3. Live Auto-Quarantine Daemon (Polls every 30 seconds)
+python scripts/email_watcher.py --user "you@gmail.com" --password "your-app-password"
+```
+
+### 6. Chrome Browser Extension (Client Protection)
+Real-time web browsing protection, tab risk badges, and in-page phishing interception:
+1. Open Google Chrome (or Edge/Brave) and visit `chrome://extensions`.
+2. Toggle on **Developer mode** in the top-right corner.
+3. Click **Load unpacked** and select the `extension/` directory.
+4. Pin the **PhishTrap Shield** icon to your toolbar for live tab scoring and quick URL scanning.
+
+### 7. Run Unit Tests & Quality Check
+```powershell
+# Run pytest test suite (29 tests)
 pytest
 
 # Or use the automated check & push script
 .\scripts\check_and_push.ps1 -CommitMessage "your commit message"
 ```
 
-### 6. Frozen Test Set Evaluation & Active Learning
+### 8. Frozen Test Set Evaluation & Active Learning
 ```powershell
 # Evaluate frozen test set (56,722 URLs) and update publication figures
 python scripts/evaluate.py
@@ -134,9 +154,17 @@ python scripts/retrain_from_overrides.py
 
 ```text
 ├── .coderabbit.yaml             # Automated AI code review instructions
+├── Dockerfile                   # Multi-stage production container definition
+├── docker-compose.yml           # Local container service with persistent SQLite volume
 ├── requirements.txt             # Python dependencies
 ├── pytest.ini                   # Pytest configuration
 ├── README.md                    # Project documentation
+├── extension/                   # Chrome Browser Extension (Manifest V3)
+│   ├── manifest.json            # Extension configuration & permissions
+│   ├── popup/                   # Extension popup UI (HTML/CSS/JS)
+│   ├── scripts/                 # Background service worker & in-page content scanner
+│   ├── icons/                   # Security shield toolbar icons (16/32/48/128px)
+│   └── README.md                # 30-second extension installation guide
 ├── data/
 │   └── processed/               # Leakage-free train.csv, val.csv, test.csv + data card
 ├── frontend/
@@ -158,6 +186,7 @@ python scripts/retrain_from_overrides.py
 │   ├── api/                     # FastAPI REST endpoints, schemas, and inference
 │   └── pipeline/                # Deterministic multi-agent pipeline and contracts
 ├── scripts/
+│   ├── email_watcher.py         # Real-time inbound IMAP email gateway & mailbox protector
 │   ├── part1_prepare_data.py    # Dataset normalization and domain hashing
 │   ├── part2_train_model.py     # Model training, calibration, and triage evaluation
 │   ├── run_demo_stream.py       # Simulated 100-email multi-agent stream replayer
@@ -166,6 +195,7 @@ python scripts/retrain_from_overrides.py
 │   └── check_and_push.ps1       # Automated test suite and git push loop
 └── tests/
     ├── test_api.py              # FastAPI endpoints and repository tests
+    ├── test_email_watcher.py    # Email gateway, parser, and MIME extraction tests
     ├── test_evaluation.py       # Metrics, figures, and active learning tests
     ├── test_features.py         # Lexical feature extraction tests
     └── test_pipeline.py         # Multi-agent contracts and safety invariant tests

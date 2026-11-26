@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, RefreshCw, UserCheck } from 'lucide-react';
+import { Shield, RefreshCw, UserCheck, Sun, Moon } from 'lucide-react';
 
 export default function Topbar({ 
   analyst, 
@@ -9,7 +9,9 @@ export default function Topbar({
   health,
   activeTab,
   setActiveTab,
-  queueCount = 0
+  queueCount = 0,
+  theme = 'light',
+  setTheme
 }) {
   const tabs = [
     { id: 'queue', label: 'Review Queue', badge: queueCount },
@@ -82,6 +84,27 @@ export default function Topbar({
                 placeholder="analyst_handle"
               />
             </div>
+
+            {/* Theme Toggle Button */}
+            {setTheme && (
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0E1527] hover:bg-slate-800 border border-white/10 text-xs font-medium text-slate-300 transition"
+                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="hidden sm:inline">Light</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-3.5 h-3.5 text-indigo-500" />
+                    <span className="hidden sm:inline">Dark</span>
+                  </>
+                )}
+              </button>
+            )}
 
             <button
               onClick={onRefresh}

@@ -18,7 +18,7 @@ Write-Host "=========================================" -ForegroundColor Cyan
 
 # 1. Run Unit Tests
 Write-Host "`n[1/4] Running test suite (pytest)..." -ForegroundColor Yellow
-$testResult = .\venv\Scripts\pytest.exe
+& ".\venv\Scripts\python.exe" -m pytest
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[ERROR] Pytest suite failed! Aborting push to maintain code quality." -ForegroundColor Red
     exit 1
